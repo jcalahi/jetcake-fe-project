@@ -42,9 +42,9 @@ class SignupPage extends React.Component {
   render() {
     const { user, signupMessage, isLoading } = this.props;
     return (
-      <Grid textAlign="center" style={{ height: '100vh' }} verticalAlign="middle">
+      <Grid textAlign="center" style={{ height: '70vh' }} verticalAlign="middle">
         <Grid.Column style={{ maxWidth: 450 }}>
-          <Header as="h2" color="teal" textAlign="center">
+          <Header as="h2" color="red" textAlign="center">
             Sign Up an account
           </Header>
           <Form size="large">
@@ -87,7 +87,7 @@ class SignupPage extends React.Component {
               }
               {
                 !user && (
-                  <Button color="teal" fluid size="large" onClick={this.handleSignup} loading={isLoading}>
+                  <Button color="red" fluid size="large" onClick={this.handleSignup} loading={isLoading}>
                     Sign Up
                   </Button>
                 )
@@ -101,7 +101,7 @@ class SignupPage extends React.Component {
               }
             </Segment>
           </Form>
-          <Message>
+          <Message warning>
             Already have an account? <a href="/signup" onClick={() => this.props.history.push('/login')}>Log In</a>
           </Message>
         </Grid.Column>

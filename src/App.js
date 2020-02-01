@@ -4,6 +4,7 @@ import history from './history';
 import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import SignupPage from './components/SignupPage';
+import ProfilePage from './components/ProfilePage';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/" exact component={HomePage} />
         <Route path="/login" exact component={LoginPage} />
         <Route path="/signup" exact component={SignupPage} />
+        <Route path="/view" exact component={ProfilePage} />
       </Switch>
     </Router>
   );

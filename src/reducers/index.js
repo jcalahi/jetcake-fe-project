@@ -2,11 +2,11 @@ import { ActionTypes } from '../actions/types';
 
 const initialState = {
   authUser: null,
-  isAuthenticated: null,
-  message: null,
-  user: null,
   confirmedEmail: null,
+  message: null,
   isLoading: false,
+  isAuthenticated: false,
+  user: null,
   userSession: null
 };
 
@@ -67,6 +67,8 @@ export default function(state = initialState, action) {
         ...state,
         userSession: null
       };
+    case ActionTypes.LOG_OUT:
+      return initialState;
     default:
       return state;
   }

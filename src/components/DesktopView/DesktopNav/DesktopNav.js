@@ -3,17 +3,27 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Button, Container, Menu } from 'semantic-ui-react';
-import Profile from '../../Profile';
+// actions
 import { checkAuth, logout } from '../../../actions';
+// components
+import Profile from '../../Profile';
 
 class DesktopNav extends React.Component {
   componentDidMount() {
     this.props.checkAuth();
   }
 
+  handleSelectOption = (value) => {
+    if (value === 'signout') {
+      this.props.logout();
+    }
+    if (value === 'view') {
+      this.props.history.push('/view');
+    }
+  }
+
   render() {
     const { fixed, history, userSession, isAuthenticated } = this.props;
-    console.log(this.props);
     return (
       <Menu
         fixed={fixed ? 'top' : undefined}
@@ -31,7 +41,7 @@ class DesktopNav extends React.Component {
           <Menu.Item as="a">Careers</Menu.Item>
           <Menu.Item position="right">
             {
-              isAuthenticated && <Profile name={userSession.email} />
+              isAuthenticated && <Profile name={userSession.email} onSelectOption={this.handleSelectOption} />
             }
             {
               !isAuthenticated && (

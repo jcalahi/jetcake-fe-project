@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { ActionTypes } from './types';
 import { 
   CognitoUserPool, 
@@ -10,6 +11,7 @@ const POOL_DATA = {
   UserPoolId: process.env.REACT_APP_USER_POOL_ID,
   ClientId: process.env.REACT_APP_CLIENT_ID
 };
+const POST_API = process.env.REACT_APP_API_POST;
 const userPool = new CognitoUserPool(POOL_DATA);
 /**
  * Sign Up Action
@@ -61,16 +63,17 @@ export const confirmSignup = (formData) => {
     dispatch({ type: ActionTypes.LOADING_IN_PROGRESS });
     cognitoUser.confirmRegistration(formData.code, true, (err, result) => {
       if (err) {
+        dispatch({ type: ActionTypes.LOADING_COMPLETE });
         dispatch({
           type: ActionTypes.CONFIRM_SIGN_UP_ERROR,
           payload: err
         });
       } else {
+        dispatch({ type: ActionTypes.LOADING_COMPLETE });
         dispatch({
           type: ActionTypes.CONFIRM_SIGN_UP_SUCCESS,
           payload: result
         });
-        dispatch({ type: ActionTypes.LOADING_COMPLETE });
       }
     });
   };
@@ -114,17 +117,21 @@ export const checkAuth = () => {
   return (dispatch) => {
     const user = userPool.getCurrentUser();
     if (user !== null) {
+      dispatch({ type: ActionTypes.LOADING_IN_PROGRESS });
       user.getSession((err, session) => {
         if (err) {
+          dispatch({ type: ActionTypes.LOADING_COMPLETE });
           dispatch({
             type: ActionTypes.NOT_AUTHENTICATED,
             payload: err
           });
         } else {
+          
           user.getUserAttributes(function(err, attributes) {
             if (err) {
                 // Handle error
             } else {
+              dispatch({ type: ActionTypes.LOADING_COMPLETE });
               dispatch({
                 type: ActionTypes.IS_AUTHENTICATED,
                 payload: {
@@ -145,6 +152,26 @@ export const checkAuth = () => {
  export const logout = () => {
    return (dispatch) => {
      userPool.getCurrentUser().signOut();
-     dispatch({ type: ActionTypes.LOG_OUT });
+     dispatch({ type: ActionTypes.LOG_OUT, payload: false });
    };
  };
+/**
+ * Update Profile
+ */
+export const updateProfile = () => {
+  return (dispatch) => {
+    userPool.getCurrentUser().getSession((err, session) => {
+      if (err) {
+        return;
+      }
+      const data = {
+        address: 'raspberry'
+      };
+      axios.post('https://2ogmjklhjb.execute-api.ap-southeast-1.amazonaws.com/dev/jcake', data, {
+        headers: new Headers({
+          Authorization: session.idToken.jwtToken
+        })
+      }).then(res => console.log(res)); 
+    });
+  };
+};

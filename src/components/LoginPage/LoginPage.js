@@ -5,7 +5,6 @@ import {
   Form,
   Grid,
   Header,
-  Image,
   Message,
   Segment
 } from 'semantic-ui-react';
@@ -38,12 +37,12 @@ class LoginPage extends React.Component {
     return (
       <Grid
         textAlign="center"
-        style={{ height: '100vh' }}
+        style={{ height: '70vh' }}
         verticalAlign="middle"
       >
         <Grid.Column style={{ maxWidth: 450 }}>
           <Header as="h2" color="teal" textAlign="center">
-            <Image src="/logo.png" /> Log-in to your account
+            Log-in to your account
           </Header>
           <Form size="large">
             <Segment stacked>
@@ -70,7 +69,9 @@ class LoginPage extends React.Component {
                 fluid 
                 size="large" 
                 loading={isLoading}
-                onClick={this.handleLogin}>
+                onClick={this.handleLogin}
+                disabled={!this.state.email || !this.state.password}
+              >
                 Login
               </Button>
               {
@@ -82,7 +83,7 @@ class LoginPage extends React.Component {
               }
             </Segment>
           </Form>
-          <Message>
+          <Message warning>
             New to us?{' '}
             <a href="/signup" onClick={() => this.props.history.push('/signup')}>
               Sign Up
