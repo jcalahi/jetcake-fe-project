@@ -102,7 +102,7 @@ class SignupPage extends React.Component {
             </Segment>
           </Form>
           <Message warning>
-            Already have an account? <a href="/signup" onClick={() => this.props.history.push('/login')}>Log In</a>
+            Already have an account? <a href="/login" onClick={() => this.props.history.push('/login')}>Log In</a>
           </Message>
         </Grid.Column>
       </Grid>
