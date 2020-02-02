@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { 
-  Responsive, 
+import {
+  Responsive,
   Segment,
-  Visibility 
+  Visibility
 } from 'semantic-ui-react';
 import PageHeader from '../../PageHeader';
 import DesktopNav from '../DesktopNav';

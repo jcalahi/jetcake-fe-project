@@ -1,11 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import {
   Menu,
   Responsive,
   Segment,
   Sidebar
 } from 'semantic-ui-react';
+// actions
+import { checkAuth, logout } from '../../../actions';
 
 import PageHeader from '../../PageHeader';
 import MobileNav from '../MobileNav';
@@ -23,11 +26,15 @@ class MobileContainer extends React.Component {
     sidebarOpened: false
   }
 
+  componentDidMount() {
+    this.props.checkAuth();
+  }
+
   handleSidebarHide = () => this.setState({ sidebarOpened: false })
   handleToggle = () => this.setState({ sidebarOpened: true })
 
   render() {
-    const { children } = this.props
+    const { children, isAuthenticated, userSession, logout } = this.props
     const { sidebarOpened } = this.state
 
     return (
@@ -43,7 +50,10 @@ class MobileContainer extends React.Component {
           vertical
           visible={sidebarOpened}
         >
-          <MobileNavSidebar />
+          <MobileNavSidebar
+            isAuth={isAuthenticated}
+            logout={logout}
+          />
         </Sidebar>
         <Sidebar.Pusher dimmed={sidebarOpened}>
           <MobileSegment
@@ -51,7 +61,11 @@ class MobileContainer extends React.Component {
             textAlign='center'
             vertical
           >
-            <MobileNav toggleSidebar={this.handleToggle} />
+            <MobileNav
+              toggleSidebar={this.handleToggle}
+              isAuth={isAuthenticated}
+              user={userSession}
+            />
             <PageHeader layout="mobile" />
           </MobileSegment>
           {children}
@@ -61,4 +75,11 @@ class MobileContainer extends React.Component {
   }
 }
 
-export default MobileContainer;
+const mapStateToProps = ({ isAuthenticated, userSession }) => {
+  return {
+    isAuthenticated,
+    userSession
+  };
+};
+
+export default connect(mapStateToProps, { checkAuth, logout })(MobileContainer);

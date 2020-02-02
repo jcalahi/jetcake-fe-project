@@ -1,49 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Grid, Form, Button, Message, TextArea } from 'semantic-ui-react';
-import { checkAuth, updateProfile, getProfileData } from '../../actions';
+import { checkAuth, updateProfile, setProfileField } from '../../actions';
 
 class ProfilePage extends React.Component {
-  state = {
-    birthdate: '',
-    address: '',
-    phonenumber: '',
-    question1: '',
-    question2: '',
-    question3: ''
-  };
 
   componentDidMount() {
     this.props.checkAuth();
   }
 
-  componentDidUpdate(prevProps) {
-    if (
-      prevProps.isAuthenticated !== this.props.isAuthenticated &&
-      this.props.isAuthenticated
-    ) {
-      this.props.getProfileData();
-    }
-    if (
-      prevProps.postSuccess !== this.props.postSuccess &&
-      this.props.postSuccess
-    ) {
-      this.props.history.push('/');
-    }
-  }
-
   handleChange = (e, data) => {
-    this.setState({
-      [data.name]: data.value
-    });
+    this.props.setProfileField(data.name, data.value);
   };
 
   handleSubmit = () => {
-    this.props.updateProfile({ ...this.state });
+    this.props.updateProfile(this.props.userProfile);
   };
 
   validateFields = () => {
-    return Object.keys(this.state).some(prop => this.state[prop].length === 0);
+    return Object.keys(this.props.userProfile).some(prop => this.props.userProfile[prop].length === 0);
   };
 
   render() {
@@ -54,12 +29,17 @@ class ProfilePage extends React.Component {
       postFailed,
       userProfile
     } = this.props;
-    console.log(userProfile);
 
-    if (!userProfile) return <div>loading...</div>;
+    if (!userSession) {
+      return (
+        <Message negative>
+          <Message.Header>Not Authorized</Message.Header>
+        </Message>
+      );
+    };
 
     return (
-      <Grid centered style={{ height: '90vh' }} verticalAlign="middle">
+      <Grid centered style={{ height: '100vh' }} verticalAlign="middle">
         <Grid.Column style={{ maxWidth: 700 }}>
           <Message
             color="blue"
@@ -84,6 +64,7 @@ class ProfilePage extends React.Component {
               placeholder="Enter your birthdate"
               type="date"
               name="birthdate"
+              value={userProfile.birthdate}
               onChange={this.handleChange}
             />
             <Form.Input
@@ -91,7 +72,7 @@ class ProfilePage extends React.Component {
               placeholder="Enter your phone number"
               type="text"
               name="phonenumber"
-              value={this.state.phonenumber || userProfile.phonenumber}
+              value={userProfile.phonenumber}
               onChange={this.handleChange}
             />
             <Form.Input
@@ -99,6 +80,7 @@ class ProfilePage extends React.Component {
               label="Address"
               type="textarea"
               name="address"
+              value={userProfile.address}
               onChange={this.handleChange}
             />
             <Form.Input
@@ -106,6 +88,7 @@ class ProfilePage extends React.Component {
               placeholder="Security Question #1"
               type="text"
               name="question1"
+              value={userProfile.question1}
               onChange={this.handleChange}
             />
             <Form.Input
@@ -113,6 +96,7 @@ class ProfilePage extends React.Component {
               placeholder="Security Question #2"
               type="text"
               name="question2"
+              value={userProfile.question2}
               onChange={this.handleChange}
             />
             <Form.Input
@@ -120,6 +104,7 @@ class ProfilePage extends React.Component {
               placeholder="Security Question #3"
               type="text"
               name="question3"
+              value={userProfile.question3}
               onChange={this.handleChange}
             />
             <Button basic color="red" onClick={() => history.push('/')}>
@@ -166,5 +151,5 @@ const mapStateToProps = ({
 export default connect(mapStateToProps, {
   checkAuth,
   updateProfile,
-  getProfileData
+  setProfileField
 })(ProfilePage);

@@ -1,5 +1,14 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Tech Stack
+
+```javascript
+  - React
+  - Redux
+  - Styled Components
+  - Semantic UI React
+  - AWS API Gateway, Lambda, Cognito, DynamoDB, S3
+
 ## Available Scripts
 
 In the project directory, you can run:

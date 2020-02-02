@@ -29,18 +29,18 @@ const PageHeader = ({ layout }) => {
     <Container text>
       <StyledH1
         as={Header}
-        content='Imagine-a-Company'
+        content='I AM YOUR HERO'
         inverted
         layout={layout}
       />
       <StyledH2
         as={Header}
-        content='Do whatever you want when you want to.'
+        content='Running errands on your behalf'
         inverted
         layout={layout}
       />
       <Button primary size='huge'>
-        Get Started
+        Let's get things done!
         <Icon name="arrow right" />
       </Button>
     </Container>

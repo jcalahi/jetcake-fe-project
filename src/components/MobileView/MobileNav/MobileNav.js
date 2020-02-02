@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import {
   Button,
   Container,
@@ -6,7 +7,7 @@ import {
   Menu
 } from 'semantic-ui-react';
 
-const MobileNav = ({ toggleSidebar }) => {
+const MobileNav = ({ toggleSidebar, isAuth, user, history }) => {
   return (
     <Container>
       <Menu inverted pointing secondary size='large'>
@@ -14,13 +15,20 @@ const MobileNav = ({ toggleSidebar }) => {
           <Icon name='sidebar' />
         </Menu.Item>
         <Menu.Item position='right'>
-          <Button as='a' inverted>
-            Log in
-          </Button>
+          {
+            isAuth && <span>{user.email}</span>
+          }
+          {
+            !isAuth && (
+              <Button as='a' inverted onClick={() => history.push('/login')}>
+                Log in
+              </Button>
+            )
+          }
         </Menu.Item>
       </Menu>
     </Container>
   );
 };
 
-export default MobileNav;
+export default withRouter(MobileNav);

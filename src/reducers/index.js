@@ -6,11 +6,18 @@ const initialState = {
   message: null,
   isLoading: false,
   isAuthenticated: false,
-  user: null,
+  signedupUser: null,
   userSession: null,
   postSuccess: false,
   postFailed: null,
-  userProfile: null
+  userProfile: {
+    address: '',
+    birthdate: '',
+    phonenumber: '',
+    question1: '',
+    question2: '',
+    question3: ''
+  }
 };
 
 export default function(state = initialState, action) {
@@ -28,7 +35,7 @@ export default function(state = initialState, action) {
     case ActionTypes.SIGN_UP_SUCCESS:
       return {
         ...state,
-        user: action.payload
+        signedupUser: action.payload
       };
     case ActionTypes.CONFIRM_SIGN_UP_ERROR:
     case ActionTypes.SIGN_UP_ERROR:
@@ -62,7 +69,6 @@ export default function(state = initialState, action) {
         postSuccess: false,
         isAuthenticated: action.payload.isAuthenticated,
         userSession: {
-          sub: action.payload.attrs[0].Value,
           email: action.payload.attrs[2].Value
         }
       };
@@ -85,6 +91,14 @@ export default function(state = initialState, action) {
       return {
         ...state,
         userProfile: action.payload
+      };
+    case ActionTypes.SET_PROFILE_FIELD:
+      return {
+        ...state,
+        userProfile: {
+          ...state.userProfile,
+          [action.payload.fieldName]: action.payload.value
+        }
       };
     case ActionTypes.LOG_OUT:
       return initialState;

@@ -16,33 +16,30 @@ class SignupPage extends React.Component {
     email: null,
     password: null,
     code: null
-  }
-
-  componentDidUpdate(prevProps) {
-    if ((prevProps.confirmedEmail !== this.props.confirmedEmail) && this.props.confirmedEmail === 'SUCCESS') {
-      this.props.history.push('/');
-    }
-  }
+  };
 
   handleConfirm = () => {
-    const { password, ...confirmItem } = this.state;
-    this.props.confirmSignup({ ...confirmItem });
-  }
+    this.props.confirmSignup(this.state);
+  };
 
   handleSignup = () => {
     this.props.signup({ ...this.state });
-  }
+  };
 
   handleChange = (e, data) => {
     this.setState({
       [data.name]: data.value
     });
-  }
+  };
 
   render() {
-    const { user, signupMessage, isLoading } = this.props;
+    const { signedupUser, signupMessage, isLoading } = this.props;
     return (
-      <Grid textAlign="center" style={{ height: '70vh' }} verticalAlign="middle">
+      <Grid
+        textAlign="center"
+        style={{ height: '100vh' }}
+        verticalAlign="middle"
+      >
         <Grid.Column style={{ maxWidth: 450 }}>
           <Header as="h2" color="red" textAlign="center">
             Sign Up an account
@@ -67,42 +64,51 @@ class SignupPage extends React.Component {
                 type="password"
                 onChange={this.handleChange}
               />
-              {
-                user &&  (
-                  <>
-                    <Form.Input
-                      fluid
-                      icon="lock"
-                      iconPosition="left"
-                      placeholder="Verification Code"
-                      name="code"
-                      type="password"
-                      onChange={this.handleChange}
-                    />
-                    <Button color="teal" fluid size="large" onClick={this.handleConfirm} loading={isLoading}>
-                      Enter the code sent to your email
-                    </Button>
-                  </>
-                )
-              }
-              {
-                !user && (
-                  <Button color="red" fluid size="large" onClick={this.handleSignup} loading={isLoading}>
-                    Sign Up
+              {signedupUser && (
+                <>
+                  <Form.Input
+                    fluid
+                    icon="lock"
+                    iconPosition="left"
+                    placeholder="Verification Code"
+                    name="code"
+                    type="password"
+                    onChange={this.handleChange}
+                  />
+                  <Button
+                    color="red"
+                    fluid
+                    size="large"
+                    onClick={this.handleConfirm}
+                    loading={isLoading}
+                  >
+                    Enter the code sent to your email
                   </Button>
-                )
-              }
-              {
-                signupMessage && (
-                  <Message negative>
-                    <Message.Header>{signupMessage}</Message.Header>
-                  </Message>
-                )
-              }
+                </>
+              )}
+              {!signedupUser && (
+                <Button
+                  color="red"
+                  fluid
+                  size="large"
+                  onClick={this.handleSignup}
+                  loading={isLoading}
+                >
+                  Sign Up
+                </Button>
+              )}
+              {signupMessage && (
+                <Message negative>
+                  <Message.Header>{signupMessage}</Message.Header>
+                </Message>
+              )}
             </Segment>
           </Form>
           <Message warning>
-            Already have an account? <a href="/login" onClick={() => this.props.history.push('/login')}>Log In</a>
+            Already have an account?{' '}
+            <a href="/login" onClick={() => this.props.history.push('/login')}>
+              Log In
+            </a>
           </Message>
         </Grid.Column>
       </Grid>
@@ -110,12 +116,11 @@ class SignupPage extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    user: state.user,
+    signedupUser: state.signedupUser,
     signupMessage: state.message,
-    isLoading: state.isLoading,
-    confirmedEmail: state.confirmedEmail
+    isLoading: state.isLoading
   };
 };
 

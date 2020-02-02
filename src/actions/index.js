@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { ActionTypes } from './types';
+import history from '../history';
+
 import {
   CognitoUserPool,
   CognitoUserAttribute,
@@ -61,11 +63,11 @@ export const confirmSignup = formData => {
     Pool: userPool
   };
   const cognitoUser = new CognitoUser(userData);
-
   return dispatch => {
     // clear error messages
     dispatch({ type: ActionTypes.CLEAR_MESSAGE });
     dispatch({ type: ActionTypes.LOADING_IN_PROGRESS });
+    // start confirming registration
     cognitoUser.confirmRegistration(formData.code, true, (err, result) => {
       if (err) {
         dispatch({ type: ActionTypes.LOADING_COMPLETE });
@@ -74,17 +76,34 @@ export const confirmSignup = formData => {
           payload: err
         });
       } else {
-        dispatch({ type: ActionTypes.LOADING_COMPLETE });
-        dispatch({
-          type: ActionTypes.CONFIRM_SIGN_UP_SUCCESS,
-          payload: result
+        // login user automatically
+        const authDetails = new AuthenticationDetails({
+          Username: formData.email,
+          Password: formData.password
+        });
+        cognitoUser.authenticateUser(authDetails, {
+          onSuccess(result) {
+            dispatch({ type: ActionTypes.LOADING_COMPLETE });
+            dispatch({
+              type: ActionTypes.LOGIN_SUCCESS,
+              payload: result
+            });
+            history.push('/');
+          },
+          onFailure(err) {
+            dispatch({ type: ActionTypes.LOADING_COMPLETE });
+            dispatch({
+              type: ActionTypes.LOGIN_ERROR,
+              payload: err
+            });
+          }
         });
       }
     });
   };
 };
 /**
- * Login Action
+ * Login Action from home page
  */
 export const login = formData => {
   return dispatch => {
@@ -107,6 +126,7 @@ export const login = formData => {
           type: ActionTypes.LOGIN_SUCCESS,
           payload: result
         });
+        history.push('/');
       },
       onFailure(err) {
         dispatch({ type: ActionTypes.LOADING_COMPLETE });
@@ -126,7 +146,7 @@ export const checkAuth = () => {
     const user = userPool.getCurrentUser();
     if (user !== null) {
       dispatch({ type: ActionTypes.LOADING_IN_PROGRESS });
-      user.getSession((err, session) => {
+      user.getSession(async (err, session) => {
         if (err) {
           dispatch({ type: ActionTypes.LOADING_COMPLETE });
           dispatch({
@@ -148,6 +168,23 @@ export const checkAuth = () => {
               });
             }
           });
+          let queryParam = '?accessToken=' + session.accessToken.jwtToken;
+          const response = await axios.get(
+          `https://2ogmjklhjb.execute-api.ap-southeast-1.amazonaws.com/dev/jcake/profile${queryParam}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: session.idToken.jwtToken
+            }
+          }
+        );
+        if (response.status === 200) {
+          dispatch({ type: ActionTypes.LOADING_COMPLETE });
+          dispatch({
+            type: ActionTypes.GET_PROFILE_SUCCESS,
+            payload: response.data
+          });
+        }
         }
       });
     }
@@ -172,6 +209,7 @@ export const updateProfile = formData => {
         return;
       }
       dispatch({ type: ActionTypes.LOADING_IN_PROGRESS });
+      formData.phonenumber = formData.phonenumber.toString();
       const response = await axios.post(
         'https://2ogmjklhjb.execute-api.ap-southeast-1.amazonaws.com/dev/jcake',
         formData,
@@ -184,10 +222,7 @@ export const updateProfile = formData => {
       );
       dispatch({ type: ActionTypes.LOADING_COMPLETE });
       if (response.status === 200) {
-        dispatch({
-          type: ActionTypes.UPDATE_PROFILE_SUCCESS,
-          payload: true
-        });
+        history.push('/');
       } else {
         dispatch({
           type: ActionTypes.UPDATE_PROFILE_FAILED,
@@ -229,4 +264,18 @@ export const getProfileData = () => {
       }
     });
   };
+};
+/**
+ * Set Profile Field
+ */
+export const setProfileField = (fieldName, value) => {
+  return (dispatch) => {
+    dispatch({
+      type: ActionTypes.SET_PROFILE_FIELD,
+      payload: {
+        fieldName,
+        value
+      }
+    });
+  }
 };
