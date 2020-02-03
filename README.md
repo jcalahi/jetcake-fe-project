@@ -9,6 +9,16 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
   - Semantic UI React
   - AWS API Gateway, Lambda, Cognito, DynamoDB, S3
 
+
+## How to
+Link: http://com-jcalahi-aws-jcake-app.s3-website-ap-southeast-1.amazonaws.com/
+
+- Signup for an account using real email address
+- In your email, check for verification code in Inbox, Junk or Spam folders
+- Enter verification code
+- You will be logged in upon confirmation
+- Go to View Profile to enter/edit information
+
 ## Available Scripts
 
 In the project directory, you can run:
