@@ -7,7 +7,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
   - Redux
   - Styled Components
   - Semantic UI React
-  - AWS API Gateway, Lambda, Cognito, DynamoDB, S3
+  - AWS API Gateway, Lambda, Cognito, DynamoDB, S3```
 
 
 ## How to
